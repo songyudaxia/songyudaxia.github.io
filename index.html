@@ -154,33 +154,88 @@
           <div id="js-content" class="content-ll">
             
   
-    <article id="post-java基础笔记-Servlet01" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-java2020-8-10学习日报-认识Servlet" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/10/java%E5%9F%BA%E7%A1%80%E7%AC%94%E8%AE%B0-Servlet01/">java基础笔记----Servlet01</a>
+      <a class="article-title" href="/2020/08/10/java2020-8-10%E5%AD%A6%E4%B9%A0%E6%97%A5%E6%8A%A5-%E8%AE%A4%E8%AF%86Servlet/">java2020.8.10学习日报----认识Servlet</a>
     </h1>
   
 
         
-        <a href="/2020/08/10/java%E5%9F%BA%E7%A1%80%E7%AC%94%E8%AE%B0-Servlet01/" class="archive-article-date">
-  	<time datetime="2020-08-10T09:16:11.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-10</time>
+        <a href="/2020/08/10/java2020-8-10%E5%AD%A6%E4%B9%A0%E6%97%A5%E6%8A%A5-%E8%AE%A4%E8%AF%86Servlet/" class="archive-article-date">
+  	<time datetime="2020-08-10T11:50:44.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-10</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="web相关概念"><a href="#web相关概念" class="headerlink" title="web相关概念"></a>web相关概念</h2><pre><code>1.软件架构
-    1.C/S:客户端/服务器端
-    2.B/S：浏览器/服务器端
+        <h2 id="web学习重要知识点"><a href="#web学习重要知识点" class="headerlink" title="web学习重要知识点"></a>web学习重要知识点</h2><pre><code>·关键概念：
 
-2.资源分类：
-    静态资源：访问后得到的结果是一样的，称为静态资源，可直接被浏览器解析
-    动态资源:用户访问得到的结果是不一样的。</code></pre>
+    * javaEE：Java语言在企业级开发中使用的技术规范的总和，一共规范了13项大的规范。
+
+    * Tomcat:web服务器软件
+
+    * 静态项目和动态项目:
+        *目录结构
+            * java动态项目的目录结构：
+                -- 项目的根目录
+                    --web-INF目录：
+                        --web.xml：web项目的核心配置文件
+                        --classes目录：放置字节码文件的目录
+                        --lib目录：放置依赖的jar包</code></pre>
+<h2 id="Servlet-server-applet"><a href="#Servlet-server-applet" class="headerlink" title="Servlet :server applet"></a>Servlet :server applet</h2><pre><code>* 概念 ： 运行在服务器端的小程序
+    * Servlet就是一个接口，定义了java类被浏览器访问到（tomcat识别）的规则。
+
+* Servlet接口的实现
+    1.首先创建javaee项目
+    2.创建一个类实现Servlet接口
+    3.然后实现接口类中的方法（这里只在server类中添加了输出语句）
+    4.最重要的就是配置web.xml文件了。
+        &lt;servlet&gt;
+            &lt;servlet-name&gt;demo&lt;servlet&gt;
+            &lt;servlet-class&gt;包名加类名&lt;/servlet&gt;
+        &lt;/servlet&gt;
+
+        &lt;servlet-mapping&gt;
+            &lt;servlet-name&gt;demo&lt;/servlet&gt;
+            &lt;url-pattern&gt;/demo&lt;/servlet&gt;
+        &lt;/servlet-mapping&gt;
+
+*执行原理：
+    1.当服务器接收到客户端浏览器的请求后，会解析请求URL路径，获取访问的Servlet的资源路径。
+    2.查找web.xml文件，是否有对应的&lt;url-pattern&gt;标签体内容
+    3.如果有，则找到独赢的 &lt;servlet-class&gt;全类名
+    4.tomcat会将字节码文件加载进内存，并且创建其对象。
+    5.然后调用其方法。
+
+* Servlet中的生命周期方法：
+    1.被创建：执行init方法，只执行一次。
+        * Servlet什么时候被创建？
+            * 默认情况下，第一次访问时，Servlet被创建。
+            * 可以配置创建Sevlet的创建时机。
+                * 在&lt;servlet&gt;标签下配置
+                    1.第一次被访问是创建
+                        * &lt;load-on-startup&gt;的值为负数。
+                    2.在服务器启动时，创建
+                        * &lt;load-on-starup&gt;的值为0或正整数。
+    2.提供服务：执行service方法，执行多次
+        * 每次访问Servlet时，Service方法都会被调用一次。
+    3.被销毁：执行destroy方法，只执行一次
+        * Servlet被销毁时执行。服务器关闭时，Servlet被销毁
+        * 只有服务器正常关闭时，才会执行destroy方法。
+        * destroy方法在Servlet被销毁之前执行，一般用于释放资源。
+
+* Servlet3.0：
+    * 好处：支持注解配置。可以不需要web.xml了。
+
+    * 步骤：
+        在类上使用注解 @WebServlet注解，进行配置
+            * @WebServlet(&quot;资源路径&quot;)</code></pre>
 
       
 
@@ -193,70 +248,7 @@
 
       
         <p class="article-more-link">
-          <a class="article-more-a" href="/2020/08/10/java%E5%9F%BA%E7%A1%80%E7%AC%94%E8%AE%B0-Servlet01/">展开全文 >></a>
-        </p>
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-你好" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2020/08/10/%E4%BD%A0%E5%A5%BD/">你好</a>
-    </h1>
-  
-
-        
-        <a href="/2020/08/10/%E4%BD%A0%E5%A5%BD/" class="archive-article-date">
-  	<time datetime="2020-08-10T08:23:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-10</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>大家才是真的好，广州好的。</p>
-
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-        <p class="article-more-link">
-          <a class="article-more-a" href="/2020/08/10/%E4%BD%A0%E5%A5%BD/">展开全文 >></a>
+          <a class="article-more-a" href="/2020/08/10/java2020-8-10%E5%AD%A6%E4%B9%A0%E6%97%A5%E6%8A%A5-%E8%AE%A4%E8%AF%86Servlet/">展开全文 >></a>
         </p>
       
 
