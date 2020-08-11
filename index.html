@@ -154,6 +154,218 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-java2020-8-11-JDBC的配置方式之druid（一）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/08/11/java2020-8-11-JDBC%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F%E4%B9%8Bdruid%EF%BC%88%E4%B8%80%EF%BC%89/">java2020.8.11----JDBC的配置方式之druid（一）</a>
+    </h1>
+  
+
+        
+        <a href="/2020/08/11/java2020-8-11-JDBC%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F%E4%B9%8Bdruid%EF%BC%88%E4%B8%80%EF%BC%89/" class="archive-article-date">
+  	<time datetime="2020-08-11T13:09:38.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-08-11</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="声明："><a href="#声明：" class="headerlink" title="声明："></a>声明：</h3><pre><code>* 数据库：mysql5.7；
+* 编译器：idearUI;</code></pre>
+<h3 id="步骤："><a href="#步骤：" class="headerlink" title="步骤："></a>步骤：</h3><pre><code>* 1.创建好Java项目，把需要的jar包导进去，放在项目下的libs目录下，没有就创建，（别忘了添加）。
+    * jar包名称如下：
+        * mysql：mysql-connector-java-5.1.49-bin.jar
+        * druid：druid-1.0.9.jar
+* 2.把druid的配置文件放在src目录下，代码如下；
+
+    driverClassName=com.mysql.jdbc.Driver
+    url=jdbc:mysql://127.0.0.1:3306/song?
+    password=123456
+    initialSize=5
+    maxActive=10
+    maxWait=3000
+
+    *注解：
+        其中url的本地ip之后是你的数据库名称。
+
+* 3.创建一个JdbcUtils类，代码如下：
+
+    class JdbcUtils&#123;
+        //声明一个静态资源数据
+        private static Datasource ds;
+
+        //声明无参构造器
+        public JdbcUtils()&#123;&#125;
+
+        //静态代码块
+        static&#123;
+            try&#123;
+                //创建一个获取配置文件的对象
+                Properties prop = new Properties();
+
+                //获取配置文件的字节流
+                InputStream in=JdbcUtils.class.getClassLoader().getResourceAsStream(&quot;druid.preperties&quot;);
+                prop.load(in);
+
+                //配置文件加载之后，然后在线程池中获取资源
+                ds = DruiDataSourceFactory.createDataSource（prop);
+
+            &#125;catch(Exception e)&#123;
+                e.printStackTrace();
+            &#125;
+
+        &#125;
+
+
+        //获取链接
+        public static Connection getConnecion() throws SQLException&#123;
+            return ds.getConnection();
+        &#125; 
+
+        //释放资源
+        public static void closeAll（AutoCloseable... all）&#123;
+
+            try&#123;
+
+                for(AutoCloseable a : all)&#123;
+                    a.close();
+                &#125;
+
+            &#125;catch(Exception e)&#123;
+                e.printStackTrace();
+            &#125;
+        &#125;
+
+        public static DataSouce getDataSource()&#123;
+            return ds;
+        &#125;
+
+
+    &#125;
+
+    * 4.创建一个实体类User:
+        public User&#123;
+            private String username;
+            private String password;
+
+            pyblic User()&#123;&#125;
+
+            &lt;!-- 属性的get和set方法 --&gt;
+        &#125;
+
+    * 5.测试类JdbcTest
+
+        class JdbcTest&#123;
+
+            public static void main(String[] args)&#123;
+                ArrayList&lt;User&gt; arrayList = new ArrayList();
+
+
+                //获取链接
+                Connection connection = Jdbcutils.getDateSourse();
+
+                //获取SQL语句对象
+                PreparedStatement pre = connection.preparestatement(sql);
+
+                //执行sql语句
+                Resutset resutset = pre.executeQuery();
+
+
+                //循环将获取的数据依次添加到Arraylist中。
+                while(resutset.next())&#123;
+                    User user = new User();
+                    user.setUsername(resutset.getString(&quot;username&quot;));
+                    user.setPassword(resutset.getString(&quot;password&quot;));
+
+                    arraList.add(user);
+
+                &#125;
+
+                //循环遍历，输出从数据库中获取的数据
+                for(User user:arrayList)&#123;
+                    System.out.print(user);
+                &#125;
+            &#125;
+
+        &#125;</code></pre>
+<h3 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h3><pre><code>其中几个关键的类和接口要理解并且知道如何使用，其中在创建工具类的时候，其中的Datesource接口的用处，方便接收数据源对象。然后就是properties类，其目的就是为了加载配置文件，配置文件的获取又需要工具类的class字节码获取。
+还有就是在获取连接之后，要使用preparedstatement类来接收sql语句对象，然后通过该对象调用相应的方法来获取数据。</code></pre>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">编程基础</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/编程基础//" class="article-tag-list-link color5">编程基础</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/编程基础/java//" class="article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/08/11/java2020-8-11-JDBC%E7%9A%84%E9%85%8D%E7%BD%AE%E6%96%B9%E5%BC%8F%E4%B9%8Bdruid%EF%BC%88%E4%B8%80%EF%BC%89/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-java2020-8-10学习日报-认识Servlet和Httml协议02" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
