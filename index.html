@@ -154,6 +154,147 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-ssh框架_邮件发送（内容发的是html文件）" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2020/10/27/ssh%E6%A1%86%E6%9E%B6_%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%EF%BC%88%E5%86%85%E5%AE%B9%E5%8F%91%E7%9A%84%E6%98%AFhtml%E6%96%87%E4%BB%B6%EF%BC%89/">ssh框架_邮件发送</a>
+    </h1>
+  
+
+        
+        <a href="/2020/10/27/ssh%E6%A1%86%E6%9E%B6_%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%EF%BC%88%E5%86%85%E5%AE%B9%E5%8F%91%E7%9A%84%E6%98%AFhtml%E6%96%87%E4%BB%B6%EF%BC%89/" class="archive-article-date">
+  	<time datetime="2020-10-27T15:30:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2020-10-27</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>首先搭建好ssh框架；</p>
+<p>xml配置如下</p>
+<pre><code>&lt;bean id=&quot;javaMailSender&quot; class=&quot;org.springframework.mail.javamail.JavaMailSenderImpl&quot;&gt;
+&lt;!-- 邮件地址    服务器端邮箱地址--&gt;
+    &lt;property name=&quot;host&quot; value=&quot;smtp.163.com&quot;&gt;&lt;/property&gt;  //协议
+    &lt;property name=&quot;username&quot; value=&quot;songyudaxia@163.com&quot; /&gt;  //用户名
+        &lt;property name=&quot;password&quot; value=&quot;授权码&quot; /&gt;   //授权码
+    &lt;property name=&quot;javaMailProperties&quot;&gt;
+        &lt;props&gt;
+            &lt;prop key=&quot;mail.smtp.auth&quot;&gt;true&lt;/prop&gt;
+            &lt;prop key=&quot;mail.smtp.timeout&quot;&gt;3000&lt;/prop&gt;
+            &lt;prop key=&quot;mail.smtp.starttls.enable&quot;&gt;false&lt;/prop&gt;
+            &lt;prop key=&quot;mail.debug&quot;&gt;true&lt;/prop&gt;
+        &lt;/props&gt;
+    &lt;/property&gt;
+&lt;/bean&gt;</code></pre>
+<p>然后创建工具类；sendUtils</p>
+<p>package com.oracle.utils;</p>
+<p>import java.util.Date;</p>
+<p>import javax.mail.MessagingException;<br>import javax.mail.internet.MimeMessage;</p>
+<p>import org.springframework.beans.factory.annotation.Autowired;<br>import org.springframework.mail.javamail.JavaMailSender;<br>import org.springframework.mail.javamail.MimeMessageHelper;<br>import org.springframework.stereotype.Component;</p>
+<p>@Component<br>public class SendEmail {</p>
+<pre><code>@Autowired
+private  JavaMailSender javaMailSender;
+                        //要发送的邮箱地址   //验证码     //注册时间
+public void send(String maileToAddress,String code,long dateline)&#123;
+    String subject = &quot;spring邮件测试&quot;;//邮件标题
+    String message = &quot;&lt;a href=&#39;http://localhost:8080/ssm_email/user/check?email=&quot;+maileToAddress+&quot;&amp;code=&quot;+code+&quot;&amp;dateline=&quot;+dateline+&quot;&#39;&gt;点击验证&lt;/a&gt;&quot;;//邮件内容正文
+    MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+    try &#123;
+        MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage,true,&quot;utf-8&quot;);
+        //邮件对象
+        messageHelper.setFrom(&quot;songyudaxia@163.com&quot;);
+        messageHelper.setSubject(subject);
+        messageHelper.setText(message,true);
+        messageHelper.setTo(maileToAddress);
+        javaMailSender.send(mimeMessage);//执行发送
+
+    &#125; catch (MessagingException e) &#123;
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    &#125;
+
+&#125;</code></pre>
+<p>}</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">java</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">邮件发送</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">html格式</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/编程进阶//" class="article-tag-list-link color5">编程进阶</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/编程进阶/java//" class="article-tag-list-link color5">java</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2020/10/27/ssh%E6%A1%86%E6%9E%B6_%E9%82%AE%E4%BB%B6%E5%8F%91%E9%80%81%EF%BC%88%E5%86%85%E5%AE%B9%E5%8F%91%E7%9A%84%E6%98%AFhtml%E6%96%87%E4%BB%B6%EF%BC%89/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-BeanUtils日期问题" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -1092,6 +1233,14 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">日期处理</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">邮件发送</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">html格式</a>
               </li>
             
             <div class="clearfix"></div>
